@@ -1,9 +1,22 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import Note from './components/note.jsx'
+
+// notas
+import Note from './components/default/note.jsx'
+import NoteInputs from './components/default/inputs.jsx'
+
+import TestNote from './components/test/note.jsx'
+import TestNoteInput from './components/test/inputs.jsx'
 
 function App() {
   const [notes, setNotes] = useState([])
+  var [selectedType, setType] = useState("default")
+
+  const noteTypes = {
+    "default": [Note, NoteInputs],
+    "description": [TestNote, TestNoteInput],
+    "image": [TestNote, TestNoteInput],
+  }
 
   function loadNotes()
   {
@@ -13,18 +26,22 @@ function App() {
     var loadedNotes = localStorage.getItem("notes").split("<note")
 
     loadedNotes = loadedNotes.map(value => {
-      var data = value.split(";>")
-      return {
+      var rawdata = value.split(";")
+      rawdata = rawdata.filter(item => {
+        return (item != "" && item.includes("=") == true)
+      })
 
+      var data = {}
+      for (let index = 0; index < rawdata.length; index++) {
+        const split = rawdata[index].split("=")
+        data[split[0].replace(/ /g, "")] = decodeURI(split[1])
       }
+
+      return data
     })
 
     loadedNotes = loadedNotes.filter(item => { // Filtra notas vacias
-      return (item != "" && item != undefined && item != null)
-    })
-
-    loadedNotes = loadedNotes.map(item => {
-      return decodeURI(item)
+      return (Object.keys(item) != 0 && item.constructor == Object)
     })
 
     setNotes(loadedNotes) // Actualiza el estado de las notas
@@ -34,32 +51,61 @@ function App() {
     loadNotes()
   },[]);
 
-  function saveNote(innerText, noteType)
+  function saveNote(data)
   {
     var existingNotes = localStorage.getItem("notes") || "" // consigue las notas existentes
 
+    var keys = ""
+    for (const key in data)
+    {
+      keys += " " + key + "=" + encodeURI(data[key]) + ";"
+    }
+
     // guarda la informacion en el local Storage
-    localStorage.setItem("notes", existingNotes + "<note type="+encodeURI(noteType)+";>"+encodeURI(innerText))
+    localStorage.setItem("notes", existingNotes + "<note"+keys+"> ")
   }
 
   function submitNote()
   {
-    var input = document.getElementById("noteInput")
-    if (input.value.replace(/ /g,"") == "") return; // Verifica si el texto no es vacio para continuar
+    var inputs = document.getElementById("inputs").children;
+    var noteData = {
+      "type": selectedType,
+      "timestamp": String(Date.now()),
+    };
 
-    saveNote(input.value)
-    setNotes([...notes, input.value]) // parecido a array.push(), inserta el texto como ultimo elemento
+    let empty = true
+    for (let index = 0; index < inputs.length; index++) {
+      if (String(inputs[index].value).replace(/ /g, "") != "") empty = false
+      noteData[inputs[index].id] = inputs[index].value
+    }
+    if (empty == true) return; // Verifica si hay minimo de un input con información
 
-    input.value = ""
+    saveNote(noteData)
+    setNotes([...notes, noteData]) // parecido a array.push(), inserta el texto como ultimo elemento
+
+    for (let index = 0; index < inputs.length; index++) {
+      inputs[index].value = ""
+    }
   }
 
-  function removeNote(innerText)
+  function removeNote(props)
   {
-    const noteIndex = notes.indexOf(innerText)
+    var items = {}
+    for (const key in props) {
+      if (props[key].constructor == String) items[key] = props[key]
+    }
+
+    const noteIndex = notes.findIndex(data => String(data.timestamp) == String(items.timestamp))
     if (noteIndex == -1) return // verifica si la nota existe en la lista mostrada en la pagina
 
+    var keys = ""
+    for (const key in items)
+    {
+      keys += " " + key + "=" + encodeURI(items[key]) + ";"
+    }
+
     var savedNotes = localStorage.getItem("notes") || ""
-    savedNotes = savedNotes.replace("<note>"+encodeURI(innerText),"")
+    savedNotes = savedNotes.replace("<note"+keys+"> ","")
     localStorage.setItem("notes", savedNotes) // Remueve la nota de las notas guardadas
 
     var newNotes = [...notes]
@@ -68,21 +114,38 @@ function App() {
     setNotes(newNotes)
   }
 
+  function getOptions()
+  {
+    var options = [];
+    for (const key in noteTypes) {
+      options.push(<option key={key} value={key}>{key}</option>)
+    }
+
+    return options;
+  }
+
+  function getForm()
+  {
+    const FormInput = noteTypes[selectedType][1];
+    return <FormInput onKey={(e) => {if (e.key == 'Enter') submitNote()}}/>
+  }
+
   return (
     <>
       <div>
-        <input id='noteInput' type="text" placeholder='Text here' onKeyDown={(e) => {if (e.key == 'Enter') submitNote()}}/>
-        <select id="type">
-          <option value="desc">Description</option>
-          <option value="img">Image</option>
+        <select id="typeInput" onChange={(e) => {setType(e.target.value)}}>
+          {getOptions()}
         </select>
-        {}
+        <div id="inputs">
+          {getForm()}
+        </div>
         <button onClick={submitNote}>Submit</button>
       </div>
 
-      {notes.map((data, index) => (
-        <Note key={index} text={data} onClick={removeNote}/>
-      ))}
+      {notes.map((data, index) => {
+        const SelectedNote = noteTypes[data.type][0];
+        return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
+      })}
     </>
   )
 }
