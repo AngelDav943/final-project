@@ -142,10 +142,10 @@ function App() {
         <button onClick={submitNote}>Submit</button>
       </div>
 
-      {notes.map((data, index) => {
-        const SelectedNote = noteTypes[data.type][0];
-        return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
-      })}
+        {notes.map((data, index) => {
+          const SelectedNote = noteTypes[data.type][0];
+          return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
+        })}
     </>
   )
 }
