@@ -8,13 +8,16 @@ import NoteInputs from './components/default/inputs.jsx'
 import TestNote from './components/test/note.jsx'
 import TestNoteInput from './components/test/inputs.jsx'
 
+import NotaDesc from './components/desc/note.jsx'
+import NotaDescInput from './components/desc/input.jsx'
+
 function App() {
   const [notes, setNotes] = useState([])
   var [selectedType, setType] = useState("default")
 
   const noteTypes = {
     "default": [Note, NoteInputs],
-    "description": [TestNote, TestNoteInput],
+    "description": [NotaDesc, NotaDescInput],
     "image": [TestNote, TestNoteInput],
   }
 

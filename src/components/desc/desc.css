@@ -1,0 +1,26 @@
+.input{
+    background-color: rgb(77, 77, 77);
+    width: 40vw;
+    height: 40vh;
+    display: grid;
+    align-items: start;
+    padding: 1%;
+    margin: 1%;
+}
+
+input{
+    background: none;
+    border: none;
+    border-bottom: 3px solid white;
+    height: 5vh;
+}
+
+.note{
+    background-color: rgb(77, 77, 77);
+    width: 40vw;
+    height: 40vh;
+    display: grid;
+    align-items: start;
+    padding: 1%;
+    margin: 1%;
+}
