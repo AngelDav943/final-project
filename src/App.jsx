@@ -8,13 +8,16 @@ import NoteInputs from './components/default/inputs.jsx'
 import TestNote from './components/test/note.jsx'
 import TestNoteInput from './components/test/inputs.jsx'
 
+import NotaDesc from './components/desc/note.jsx'
+import NotaDescInput from './components/desc/input.jsx'
+
 function App() {
   const [notes, setNotes] = useState([])
   var [selectedType, setType] = useState("default")
 
   const noteTypes = {
     "default": [Note, NoteInputs],
-    "description": [TestNote, TestNoteInput],
+    "description": [NotaDesc, NotaDescInput],
     "image": [TestNote, TestNoteInput],
   }
 
@@ -132,6 +135,7 @@ function App() {
 
   return (
     <>
+      <img src="src/assets/logo.svg" alt="" />
       <div>
         <select id="typeInput" onChange={(e) => {setType(e.target.value)}}>
           {getOptions()}
@@ -142,10 +146,12 @@ function App() {
         <button onClick={submitNote}>Submit</button>
       </div>
 
-      {notes.map((data, index) => {
-        const SelectedNote = noteTypes[data.type][0];
-        return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
-      })}
+      <div>
+        {notes.map((data, index) => {
+          const SelectedNote = noteTypes[data.type][0];
+          return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
+        })}
+      </div>
     </>
   )
 }
