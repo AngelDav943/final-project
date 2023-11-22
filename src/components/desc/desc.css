@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+*{
+    font-family: 'Inter';
+}
+
 .input{
     background-color: rgb(77, 77, 77);
     width: 40vw;
@@ -16,11 +22,14 @@ input{
 }
 
 .note{
-    background-color: rgb(77, 77, 77);
-    width: 40vw;
-    height: 40vh;
-    display: grid;
-    align-items: start;
-    padding: 1%;
-    margin: 1%;
+    display: flex;
+    width: 237px;
+    height: 219px;
+    padding: 31.25px 23.437px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15.625px;
+    border-radius: 11.719px;
+    border: 1.465px solid var(--Gray-OUT, rgba(74, 74, 74, 0.25));
+    background: var(--Gray, #ADADAD);
 }

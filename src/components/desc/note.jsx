@@ -10,9 +10,10 @@ export default function(props)
 
     return (
         <article className="note">
-            <p>Title: {props.title}</p>
-            <p>Description: {props.description}</p>
-            <button onClick={onClick}>Delete</button>
+            <img onClick={onClick} className='delete' src="">
+            <p>{props.title}</p>
+            <p>{props.description}</p>
+            
             <span> {props.type}</span>
         </article>
     )
