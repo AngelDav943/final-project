@@ -135,7 +135,8 @@ function App() {
 
   return (
     <>
-      <img src="src/assets/logo.svg" alt="" />
+      <img src="src/assets/images/logo.svg" alt="" />
+      <img src="src/assets/images/circulos.svg" alt="" />
       <div>
         <select id="typeInput" onChange={(e) => {setType(e.target.value)}}>
           {getOptions()}
