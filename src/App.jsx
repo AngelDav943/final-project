@@ -1,4 +1,5 @@
 import React from 'react'
+import './styles/app.css'
 import { useState, useEffect } from 'react'
 
 import './styles/nota.css'
@@ -138,7 +139,10 @@ function App() {
 
   return (
     <>
-      <img src="src/assets/logo.svg" alt="" />
+      <banner>
+        <img src="src/assets/images/logo.svg" alt="" />
+        <img src="src/assets/images/circulos.svg" alt="" />
+      </banner>
       <div>
         <select id="typeInput" onChange={(e) => {setType(e.target.value)}}>
           {getOptions()}

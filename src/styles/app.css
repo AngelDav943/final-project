@@ -5,3 +5,10 @@ main{
     justify-content: center;
     gap: 20px;
 }
+
+banner{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 2vw 6vh 0;
+}
