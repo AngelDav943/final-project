@@ -20,16 +20,3 @@ input{
     border-bottom: 3px solid white;
     height: 5vh;
 }
-
-.note{
-    display: flex;
-    width: 237px;
-    height: 219px;
-    padding: 31.25px 23.437px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15.625px;
-    border-radius: 11.719px;
-    border: 1.465px solid var(--Gray-OUT, rgba(74, 74, 74, 0.25));
-    background: var(--Gray, #ADADAD);
-}

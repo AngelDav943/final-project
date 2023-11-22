@@ -10,10 +10,9 @@ export default function(props)
 
     return (
         <article className="note">
-            <img onClick={onClick} className='delete' src="">
-            <p>{props.title}</p>
+            <img onClick={onClick} className='delete' src="src/assets/images/delete.svg"/>
+            <h2>{props.title}</h2>
             <p>{props.description}</p>
-            
             <span> {props.type}</span>
         </article>
     )

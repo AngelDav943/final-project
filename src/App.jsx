@@ -1,6 +1,9 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 
+import './styles/nota.css'
+import './styles/app.css'
+
 // notas
 import Note from './components/default/note.jsx'
 import NoteInputs from './components/default/inputs.jsx'
@@ -33,21 +36,21 @@ function App() {
       rawdata = rawdata.filter(item => {
         return (item != "" && item.includes("=") == true)
       })
-      
+
       var data = {}
       for (let index = 0; index < rawdata.length; index++) {
         const split = rawdata[index].split("=")
         data[split[0].replace(/ /g, "")] = decodeURI(split[1])
       }
-      
+
       return data
     })
 
     loadedNotes = loadedNotes.filter(item => { // Filtra notas vacias
       return (Object.keys(item) != 0 && item.constructor == Object)
     })
-    
-    setNotes(loadedNotes) // Actualiza el estado de las notas  
+
+    setNotes(loadedNotes) // Actualiza el estado de las notas
   }
 
   useEffect(() => {
@@ -76,9 +79,12 @@ function App() {
       "timestamp": String(Date.now()),
     };
 
+    let empty = true
     for (let index = 0; index < inputs.length; index++) {
+      if (String(inputs[index].value).replace(/ /g, "") != "") empty = false
       noteData[inputs[index].id] = inputs[index].value
     }
+    if (empty == true) return; // Verifica si hay minimo de un input con información
 
     saveNote(noteData)
     setNotes([...notes, noteData]) // parecido a array.push(), inserta el texto como ultimo elemento
@@ -94,7 +100,7 @@ function App() {
     for (const key in props) {
       if (props[key].constructor == String) items[key] = props[key]
     }
-    
+
     const noteIndex = notes.findIndex(data => String(data.timestamp) == String(items.timestamp))
     if (noteIndex == -1) return // verifica si la nota existe en la lista mostrada en la pagina
 
@@ -132,6 +138,7 @@ function App() {
 
   return (
     <>
+      <img src="src/assets/logo.svg" alt="" />
       <div>
         <select id="typeInput" onChange={(e) => {setType(e.target.value)}}>
           {getOptions()}
@@ -142,10 +149,12 @@ function App() {
         <button onClick={submitNote}>Submit</button>
       </div>
 
+      <main>
         {notes.map((data, index) => {
           const SelectedNote = noteTypes[data.type][0];
           return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
         })}
+      </main>
     </>
   )
 }
