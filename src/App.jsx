@@ -135,6 +135,7 @@ function App() {
 
   return (
     <>
+      <img src="src/assets/logo.svg" alt="" />
       <div>
         <select id="typeInput" onChange={(e) => {setType(e.target.value)}}>
           {getOptions()}
@@ -145,10 +146,12 @@ function App() {
         <button onClick={submitNote}>Submit</button>
       </div>
 
-      {notes.map((data, index) => {
-        const SelectedNote = noteTypes[data.type][0];
-        return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
-      })}
+      <div>
+        {notes.map((data, index) => {
+          const SelectedNote = noteTypes[data.type][0];
+          return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
+        })}
+      </div>
     </>
   )
 }
