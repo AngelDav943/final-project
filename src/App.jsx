@@ -1,140 +1,145 @@
-import React from 'react'
-import './styles/app.css'
-import { useState, useEffect } from 'react'
+import React from "react";
+import "./styles/app.css";
+import { useState, useEffect } from "react";
 
-import './styles/nota.css'
-import './styles/app.css'
+import "./styles/nota.css";
+import "./styles/app.css";
 
 // notas
-import Note from './components/default/note.jsx'
-import NoteInputs from './components/default/inputs.jsx'
+import Note from "./components/default/note.jsx";
+import NoteInputs from "./components/default/inputs.jsx";
 
-import TestNote from './components/test/note.jsx'
-import TestNoteInput from './components/test/inputs.jsx'
+import TestNote from "./components/image/note.jsx";
+import TestNoteInput from "./components/image/inputs.jsx";
 
-import NotaDesc from './components/desc/note.jsx'
-import NotaDescInput from './components/desc/input.jsx'
+import NotaDesc from "./components/desc/note.jsx";
+import NotaDescInput from "./components/desc/input.jsx";
 
 function App() {
-  const [notes, setNotes] = useState([])
-  var [selectedType, setType] = useState("default")
+  const [notes, setNotes] = useState([]);
+  var [selectedType, setType] = useState("default");
 
   const noteTypes = {
-    "default": [Note, NoteInputs],
-    "description": [NotaDesc, NotaDescInput],
-    "image": [TestNote, TestNoteInput],
-  }
+    default: [Note, NoteInputs],
+    description: [NotaDesc, NotaDescInput],
+    image: [TestNote, TestNoteInput],
+  };
 
-  function loadNotes()
-  {
-    if (localStorage.getItem("notes") == null) return // Verifica si existe alguna nota guardada para continuar
+  function loadNotes() {
+    if (localStorage.getItem("notes") == null) return; // Verifica si existe alguna nota guardada para continuar
 
     // Convierte el texto guardado a una lista
-    var loadedNotes = localStorage.getItem("notes").split("<note")
+    var loadedNotes = localStorage.getItem("notes").split("<note");
 
-    loadedNotes = loadedNotes.map(value => {
-      var rawdata = value.split(";")
-      rawdata = rawdata.filter(item => {
-        return (item != "" && item.includes("=") == true)
-      })
+    loadedNotes = loadedNotes.map((value) => {
+      var rawdata = value.split(";");
+      rawdata = rawdata.filter((item) => {
+        return item != "" && item.includes("=") == true;
+      });
 
-      var data = {}
+      var data = {};
       for (let index = 0; index < rawdata.length; index++) {
-        const split = rawdata[index].split("=")
-        data[split[0].replace(/ /g, "")] = decodeURI(split[1])
-      }
+        const split = rawdata[index].split("=");
+        data[split[0].replace(/ /g, "")] = decodeURI(split[1]);
+      }       
 
-      return data
-    })
+      return data;
+    });
 
-    loadedNotes = loadedNotes.filter(item => { // Filtra notas vacias
-      return (Object.keys(item) != 0 && item.constructor == Object)
-    })
+    loadedNotes = loadedNotes.filter((item) => {
+      // Filtra notas vacias
+      return Object.keys(item) != 0 && item.constructor == Object;
+    });
 
-    setNotes(loadedNotes) // Actualiza el estado de las notas
+    setNotes(loadedNotes); // Actualiza el estado de las notas
   }
 
   useEffect(() => {
-    loadNotes()
-  },[]);
+    loadNotes();
+  }, []);
 
-  function saveNote(data)
-  {
-    var existingNotes = localStorage.getItem("notes") || "" // consigue las notas existentes
+  function saveNote(data) {
+    var existingNotes = localStorage.getItem("notes") || ""; // consigue las notas existentes
 
-    var keys = ""
-    for (const key in data)
-    {
-      keys += " " + key + "=" + encodeURI(data[key]) + ";"
+    var keys = "";
+    for (const key in data) {
+      keys += " " + key + "=" + encodeURI(data[key]) + ";";
     }
 
     // guarda la informacion en el local Storage
-    localStorage.setItem("notes", existingNotes + "<note"+keys+"> ")
+    localStorage.setItem("notes", existingNotes + "<note" + keys + "> ");
   }
 
-  function submitNote()
-  {
+  function submitNote() {
     var inputs = document.getElementById("inputs").children;
     var noteData = {
-      "type": selectedType,
-      "timestamp": String(Date.now()),
+      type: selectedType,
+      timestamp: String(Date.now()),
     };
 
-    let empty = true
+    let empty = true;
     for (let index = 0; index < inputs.length; index++) {
-      if (String(inputs[index].value).replace(/ /g, "") != "") empty = false
-      noteData[inputs[index].id] = inputs[index].value
+      if (String(inputs[index].value).replace(/ /g, "") != "") empty = false;
+      noteData[inputs[index].id] = inputs[index].value;
     }
     if (empty == true) return; // Verifica si hay minimo de un input con información
 
-    saveNote(noteData)
-    setNotes([...notes, noteData]) // parecido a array.push(), inserta el texto como ultimo elemento
+    saveNote(noteData);
+    setNotes([...notes, noteData]); // parecido a array.push(), inserta el texto como ultimo elemento
 
     for (let index = 0; index < inputs.length; index++) {
-      inputs[index].value = ""
+      inputs[index].value = "";
     }
   }
 
-  function removeNote(props)
-  {
-    var items = {}
+  function removeNote(props) {
+    var items = {};
     for (const key in props) {
-      if (props[key].constructor == String) items[key] = props[key]
+      if (props[key].constructor == String) items[key] = props[key];
     }
 
-    const noteIndex = notes.findIndex(data => String(data.timestamp) == String(items.timestamp))
-    if (noteIndex == -1) return // verifica si la nota existe en la lista mostrada en la pagina
+    const noteIndex = notes.findIndex(
+      (data) => String(data.timestamp) == String(items.timestamp)
+    );
+    if (noteIndex == -1) return; // verifica si la nota existe en la lista mostrada en la pagina
 
-    var keys = ""
-    for (const key in items)
-    {
-      keys += " " + key + "=" + encodeURI(items[key]) + ";"
+    var keys = "";
+    for (const key in items) {
+      keys += " " + key + "=" + encodeURI(items[key]) + ";";
     }
 
-    var savedNotes = localStorage.getItem("notes") || ""
-    savedNotes = savedNotes.replace("<note"+keys+"> ","")
-    localStorage.setItem("notes", savedNotes) // Remueve la nota de las notas guardadas
+    var savedNotes = localStorage.getItem("notes") || "";
+    savedNotes = savedNotes.replace("<note" + keys + "> ", "");
+    localStorage.setItem("notes", savedNotes); // Remueve la nota de las notas guardadas
 
-    var newNotes = [...notes]
-    newNotes.splice(noteIndex, 1)
+    var newNotes = [...notes];
+    newNotes.splice(noteIndex, 1);
 
-    setNotes(newNotes)
+    setNotes(newNotes);
   }
 
-  function getOptions()
-  {
+  function getOptions() {
     var options = [];
     for (const key in noteTypes) {
-      options.push(<option key={key} value={key}>{key}</option>)
+      options.push(
+        <option key={key} value={key}>
+          {key}
+        </option>
+      );
     }
 
     return options;
   }
 
-  function getForm()
-  {
+  function getForm() {
     const FormInput = noteTypes[selectedType][1];
-    return <FormInput onKey={(e) => {if (e.key == 'Enter') submitNote()}}/>
+    return (
+      <FormInput
+        onKey={(e) => {
+          if (e.key == "Enter") submitNote();
+        }}
+      />
+    );
   }
 
   return (
@@ -144,23 +149,26 @@ function App() {
         <img src="src/assets/images/circulos.svg" alt="" />
       </banner>
       <div>
-        <select id="typeInput" onChange={(e) => {setType(e.target.value)}}>
+        <select
+          id="typeInput"
+          onChange={(e) => {
+            setType(e.target.value);
+          }}
+        >
           {getOptions()}
         </select>
-        <div id="inputs">
-          {getForm()}
-        </div>
+        <div id="inputs">{getForm()}</div>
         <button onClick={submitNote}>Submit</button>
       </div>
 
       <main>
         {notes.map((data, index) => {
           const SelectedNote = noteTypes[data.type][0];
-          return (<SelectedNote key={index} {...data} onClick={removeNote}/>);
+          return <SelectedNote key={index} {...data} onClick={removeNote} />;
         })}
       </main>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

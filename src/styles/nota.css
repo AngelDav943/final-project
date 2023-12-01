@@ -24,3 +24,8 @@
 .delete:hover{
     background-color: grey;
 }
+
+#imageUser{    
+    width: 200px;
+    height: 200px;
+}
